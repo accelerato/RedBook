@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Red book</string>
+    <array name="my_foods">
+        <item>s1</item>
+        <item>s2</item>
+        <item>s3</item>
+    </array>
 </resources>

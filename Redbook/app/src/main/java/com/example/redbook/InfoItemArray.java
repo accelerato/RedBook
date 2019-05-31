@@ -34,6 +34,10 @@ class InfoItemArray {
 
     }
 
+    ArrayList<InfoItem> getInfoItems(){
+        return infoItems;
+    }
+
     int size(){
         return infoItems.size();
     }
@@ -59,11 +63,13 @@ class InfoItemArray {
         }
 
         void recycle(){
-            if (imageItem != null)
+            if (imageItem != null && !imageItem.isRecycled()) {
                 imageItem.recycle();
+                imageItem = null;
+            }
         }
 
-        void setImageItem(Bitmap imageItem) {
+        synchronized void setImageItem(Bitmap imageItem) {
             this.imageItem = imageItem;
         }
 
