@@ -20,7 +20,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,8 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,11 +51,12 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
     PagerAdapter pagerAdapter;
     TextView titleName;
     int lastPosition = 0;
-    Boolean isLoad;
-    Toolbar toolbar;
     DrawerLayout drawerLayout;
     Handler handler = new Handler();
     int mainLastPosition = 0;
+    NavigationView navigationView;
+
+    int main_or_favourite = 0;
 
     public ClientConnection clientConnection;
     public boolean isLink;
@@ -82,7 +80,6 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppDefault);
@@ -90,7 +87,6 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
         setContentView(R.layout.main);
 
         pager = (ViewPager) findViewById(R.id.pager);
-//        pager.setOffscreenPageLimit(10);
         loadListNames(infoItemArray);
         infoItemArray.shuffle();
         mainArray = infoItemArray;
@@ -114,7 +110,6 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
             }
         });
 
-        initToolbar();
         initNavigationView();
 
         titleName = findViewById(R.id.txt_title);
@@ -178,7 +173,7 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
         public MyFragmentPagerAdapter(FragmentManager fm, InfoItemArray infoItemArray) {
             super(fm);
 
-            for (int i = 0; i < MAX_PAGE_LIMIT + 1; i++){
+            for (int i = 0; i < MAX_PAGE_LIMIT + 1; i++) {
 
                 if (i >= PAGE_COUNT)
                     break;
@@ -287,11 +282,10 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
 
                         String text = "<br>";
                         while (m2.find()) {
-                            if (m2.group(2) != null && m2.group(2).equals("extract")){
+                            if (m2.group(2) != null && m2.group(2).equals("extract")) {
                                 text += "<big><big><b><font color=#FFFFFF>Основная информация</font></b></big></big><br>" + m2.group(3);
                                 text += "<br><br><br>";
-                            }
-                            else {
+                            } else {
                                 if (!(m2.group(5).replace("=", "").replace("\n", "").trim().equals("Галерея") ||
                                         m2.group(5).replace("=", "").replace("\n", "").trim().equals("См. также"))) {
                                     if (m2.group(6).charAt(0) == '\\') {
@@ -369,15 +363,11 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
         }
     }
 
-    private void initToolbar() {
-        toolbar = findViewById(R.id.toolbar);
-    }
-
 
     private void initNavigationView() {
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = findViewById(R.id.navigation);
+        navigationView = findViewById(R.id.navigation);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -386,41 +376,25 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.item_favourite:
 
-                        mainLastPosition = lastPosition;
-                        if (favouriteArray.size() == 0)
-                        {
-//                            favouriteArray.add("Пусто");
-                            infoItemArray = favouriteArray;
-                            PAGE_COUNT = 1;
-                            pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
-                            pager.setAdapter(pagerAdapter);
+                        onClickFavouriteItemMenu();
 
-                        }else {
-                            infoItemArray = favouriteArray;
-                            PAGE_COUNT = infoItemArray.size();
-                            pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
-                            pager.setAdapter(pagerAdapter);
-                        }
+                        drawerLayout.closeDrawer(Gravity.START);
+                        break;
 
-                        titleName.setText(Html.fromHtml("<big>Избранное</big>"));
+                    case R.id.item_main:
+
+                        main_or_favourite = 0;
+                        infoItemArray = mainArray;
+                        PAGE_COUNT = infoItemArray.size();
+                        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
+                        pager.setAdapter(pagerAdapter);
+                        pager.setCurrentItem(mainLastPosition);
+
+                        titleName.setText(Html.fromHtml("<big>Млекопитающие животные</big>"));
                         drawerLayout.closeDrawer(Gravity.START);
 
                         break;
-
-                case R.id.item_main:
-
-
-                infoItemArray = mainArray;
-                PAGE_COUNT = infoItemArray.size();
-                pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
-                pager.setAdapter(pagerAdapter);
-                pager.setCurrentItem(mainLastPosition);
-
-                titleName.setText(Html.fromHtml("<big>Млекопитающие животные</big>"));
-                drawerLayout.closeDrawer(Gravity.START);
-
-                break;
-            }
+                }
 
                 return true;
             }
@@ -428,7 +402,28 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
 
     }
 
-    void showDialogComment(){
+    void onClickFavouriteItemMenu(){
+
+        mainLastPosition = lastPosition;
+        main_or_favourite = 1;
+        if (favouriteArray.size() == 0) {
+            infoItemArray = favouriteArray;
+            PAGE_COUNT = 1;
+            pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
+            pager.setAdapter(pagerAdapter);
+
+        } else {
+            infoItemArray = favouriteArray;
+            PAGE_COUNT = infoItemArray.size();
+            pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), infoItemArray);
+            pager.setAdapter(pagerAdapter);
+        }
+
+        titleName.setText(Html.fromHtml("<big>Избранное</big>"));
+
+    }
+
+    void showDialogComment() {
 
         DialogComment dialogComment = new DialogComment();
         dialogComment.name = infoItemArray.get(lastPosition).getNameItem();
@@ -436,7 +431,7 @@ public class ViewPagerSampleActivity extends AppCompatActivity {
 
     }
 
-    void showDialogSearch(){
+    void showDialogSearch() {
 
         DialogSearch dialogSearch = new DialogSearch();
         dialogSearch.show(getSupportFragmentManager(), "DialogSearch");

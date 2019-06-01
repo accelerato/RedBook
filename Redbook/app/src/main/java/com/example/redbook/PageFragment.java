@@ -12,13 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class PageFragment extends Fragment {
 
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
-
 
     static PageFragment newInstance(int page) {
         Log.d("myLogs", "newInstance, page = " + page);
@@ -78,11 +78,34 @@ public class PageFragment extends Fragment {
                 }
             });
 
-            ImageView imgFavourite = view.findViewById(R.id.img_favourite);
+            final ImageView imgFavourite = view.findViewById(R.id.img_favourite);
+
+            if (((ViewPagerSampleActivity) getActivity()).favouriteArray.getPositionFromName(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem()) != -1){
+                imgFavourite.setImageResource(R.drawable.animation_delete_favourite);
+            }else {
+                imgFavourite.setImageResource(R.drawable.animation_add_favourite);
+            }
+
             imgFavourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((ViewPagerSampleActivity) getActivity()).favouriteArray.add(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem());
+                    if (((ViewPagerSampleActivity) getActivity()).main_or_favourite == 1){
+
+                        ((ViewPagerSampleActivity) getActivity()).favouriteArray.remove(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem());
+                        ((ViewPagerSampleActivity) getActivity()).onClickFavouriteItemMenu();
+
+                        if (index > 1)
+                            ((ViewPagerSampleActivity) getActivity()).pager.setCurrentItem(index - 1);
+
+                    }else {
+                        if (((ViewPagerSampleActivity) getActivity()).favouriteArray.getPositionFromName(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem()) == -1) {
+                            ((ViewPagerSampleActivity) getActivity()).favouriteArray.add(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem());
+                            imgFavourite.setImageResource(R.drawable.animation_delete_favourite);
+                        } else {
+                            ((ViewPagerSampleActivity) getActivity()).favouriteArray.remove(((ViewPagerSampleActivity) getActivity()).infoItemArray.get(index).getNameItem());
+                            imgFavourite.setImageResource(R.drawable.animation_add_favourite);
+                        }
+                    }
                 }
             });
 

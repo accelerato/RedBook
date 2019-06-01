@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,7 +29,6 @@ public class DialogSearch extends DialogFragment {
     private ListView listView;
     List<ListSearchItem> list = new ArrayList<>();
     ArrayList<InfoItemArray.InfoItem> names;
-    Handler handler = new Handler();
 
     @Nullable
     @Override
@@ -102,7 +99,6 @@ public class DialogSearch extends DialogFragment {
             public void onClick(View v) {
                 final String input = mInput.getText().toString();
                 if (!input.equals("")){
-
                     int index = ((ViewPagerSampleActivity)getActivity()).infoItemArray.getPositionFromName(input);
                     int maxPageLoad = ((ViewPagerSampleActivity)getActivity()).MAX_PAGE_LIMIT;
                     int lastPosition = ((ViewPagerSampleActivity)getActivity()).lastPosition;
@@ -133,8 +129,7 @@ public class DialogSearch extends DialogFragment {
                             getDialog().dismiss();
                             return;
                         }
-
-
+                        
                         ((ViewPagerSampleActivity)getActivity()).infoItemArray.get(lastPosition).recycle();
 
                         for (int i = 1; i <= maxPageLoad; i++){
@@ -147,7 +142,6 @@ public class DialogSearch extends DialogFragment {
                             }
                         }
 
-                        ((ViewPagerSampleActivity)getActivity()).isLoad = false;
                         ((ViewPagerSampleActivity)getActivity()).load(index,((ViewPagerSampleActivity) getActivity()).infoItemArray);
 
                         for (int i = 1; i <= maxPageLoad; i++){
@@ -161,11 +155,7 @@ public class DialogSearch extends DialogFragment {
                             }
                         }
 
-
-
-
                     }
-
                 }else {
                     Toast.makeText(getActivity(), "Вы ничего не ввели", Toast.LENGTH_SHORT).show();
                 }

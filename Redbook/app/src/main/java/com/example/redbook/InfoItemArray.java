@@ -34,6 +34,17 @@ class InfoItemArray {
 
     }
 
+    void remove(String nameItem){
+
+        for (int i = 0; i < infoItems.size(); i++){
+            if (infoItems.get(i).getNameItem().equals(nameItem)){
+                infoItems.remove(i);
+                return;
+            }
+        }
+
+    }
+
     ArrayList<InfoItem> getInfoItems(){
         return infoItems;
     }

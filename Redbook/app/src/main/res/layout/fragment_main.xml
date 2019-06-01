@@ -29,9 +29,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="60dp"
-            sothree:srcCompat="@drawable/ic_add_favourite_2"
+            android:padding="3dp"
             sothree:layout_constraintStart_toStartOf="parent"
-            sothree:layout_constraintTop_toTopOf="parent" />
+            sothree:layout_constraintTop_toTopOf="parent"
+            sothree:srcCompat="@drawable/animation_add_favourite" />
 
         <ImageView
             android:id="@+id/img_comment"
